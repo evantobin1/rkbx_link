@@ -123,6 +123,9 @@ Below are settings for toggling messages which are sent very rapidly, which migh
 - `osc.msg.beat_master.div_1 <bool>`: `/beat/master/div1`
 - `osc.msg.beat_master.div_2 <bool>`: `/beat/master/div2`
 - `osc.msg.beat_master.div_4 <bool>`: `/beat/master/div4`
+- `osc.msg.beat_master.trigger.div_1 <bool>`: `/beat/master/trigger/div1`
+- `osc.msg.beat_master.trigger.div_2 <bool>`: `/beat/master/trigger/div2`
+- `osc.msg.beat_master.trigger.div_4 <bool>`: `/beat/master/trigger/div4`
 - `osc.msg.time_master <bool>`: `/time/master`
 - `osc.msg.phrase_master <bool>`: `/phrase/master/current`, `/phrase/master/next`, `/phrase/master/countin`
 
@@ -130,6 +133,9 @@ Below are settings for toggling messages which are sent very rapidly, which migh
 - `osc.msg.beat.div_1 <bool>`: `/beat/[deck]/div1`
 - `osc.msg.beat.div_2 <bool>`: `/beat/[deck]/div2`
 - `osc.msg.beat.div_4 <bool>`: `/beat/[deck]/div4`
+- `osc.msg.beat.trigger.div_1 <bool>`: `/beat/[deck]/trigger/div1`
+- `osc.msg.beat.trigger.div_2 <bool>`: `/beat/[deck]/trigger/div2`
+- `osc.msg.beat.trigger.div_4 <bool>`: `/beat/[deck]/trigger/div4`
 - `osc.msg.time <bool>`: `/time/[deck]`
 - `osc.msg.phrase <bool>`: `/phrase/[deck]/current`, `/phrase/[deck]/next`, `/phrase/[deck]/countin`
 
@@ -168,6 +174,8 @@ Sends the current tempo as an int on channel `start_channel` and a looping count
  - `/bpm/[deck]/current` (float) Current BPM of the master deck
  - `/bpm/[deck]/original` (float) Original (non-pitched) BPM of the master deck
  - `/beat/[deck]` (float) Total beat / number of beats since beat 1.1
+ - `/beat/[deck]/div[1|2|4]` (float) Normalised values 0-1 looping with 1, 2 or 4 beat intervals. 
+  - `/beat/[deck]/trigger/div[1|2|4]` (float) Value 1.0 when a beat is detected with 1, 2 or 4 beat intervals. 
  - `/beat/[deck]/div[1|2|4]` (float) Normalised values 0-1 looping with 1, 2 or 4 beat intervals. Good for making looping animations with 1-4 beat periods.
  - `/time/[deck]` (float) Current track position in seconds
  - `/track/[deck]/[title|artist|album]` (string) Title/artist/album of the current track on deck 1, 2, 3 or 4, or the master deck.

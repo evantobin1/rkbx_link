@@ -53,6 +53,9 @@ osc.msg.beat_master true
 osc.msg.beat_master.div_1 false
 osc.msg.beat_master.div_2 false
 osc.msg.beat_master.div_4 false
+osc.msg.beat_master.trigger.div_1 false
+osc.msg.beat_master.trigger.div_2 false
+osc.msg.beat_master.trigger.div_4 false
 osc.msg.time_master true
 osc.msg.phrase_master true
 
@@ -60,6 +63,9 @@ osc.msg.beat false
 osc.msg.beat.div_1 false
 osc.msg.beat.div_2 false
 osc.msg.beat.div_4 false
+osc.msg.beat.trigger.div_1 false
+osc.msg.beat.trigger.div_2 false
+osc.msg.beat.trigger.div_4 false
 osc.msg.time false
 osc.msg.phrase false
 

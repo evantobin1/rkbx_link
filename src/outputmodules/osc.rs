@@ -28,10 +28,16 @@ struct MessageToggles{
     beat_div_1: bool,
     beat_div_2: bool,
     beat_div_4: bool,
+    beat_trigger_div_1: bool,
+    beat_trigger_div_2: bool,
+    beat_trigger_div_4: bool,
     beat_master: bool,
     beat_master_div_1: bool,
     beat_master_div_2: bool,
     beat_master_div_4: bool,
+    beat_master_trigger_div_1: bool,
+    beat_master_trigger_div_2: bool,
+    beat_master_trigger_div_4: bool,
     time: bool,
     time_master: bool,
     phrase: bool,
@@ -47,10 +53,16 @@ impl MessageToggles{
             beat_div_1: conf.get_or_default("msg.beat.div_1", false), 
             beat_div_2: conf.get_or_default("msg.beat.div_2", false), 
             beat_div_4: conf.get_or_default("msg.beat.div_4", false), 
+            beat_trigger_div_1: conf.get_or_default("msg.beat.trigger.div_1", false),
+            beat_trigger_div_2: conf.get_or_default("msg.beat.trigger.div_2", false),
+            beat_trigger_div_4: conf.get_or_default("msg.beat.trigger.div_4", false),
             beat_master: conf.get_or_default("msg.beat_master", true), 
             beat_master_div_1: conf.get_or_default("msg.beat_master.div_1", false), 
             beat_master_div_2: conf.get_or_default("msg.beat_master.div_2", false), 
             beat_master_div_4: conf.get_or_default("msg.beat_master.div_4", false), 
+            beat_master_trigger_div_1: conf.get_or_default("msg.beat_master.trigger.div_1", false),
+            beat_master_trigger_div_2: conf.get_or_default("msg.beat_master.trigger.div_2", false),
+            beat_master_trigger_div_4: conf.get_or_default("msg.beat_master.trigger.div_4", false),
             time: conf.get_or_default("msg.time", false), 
             time_master: conf.get_or_default("msg.time_master", true), 
             phrase: conf.get_or_default("msg.phrase", false), 
@@ -75,7 +87,9 @@ pub struct Osc {
     logger: ScopedLogger,
     message_toggles: MessageToggles,
     send_period: i32,
-    send_period_counter: i32
+    send_period_counter: i32,
+    last_beat_master: f32,
+    last_beats: Vec<f32>
 }
 
 
@@ -146,6 +160,8 @@ impl Osc {
             message_toggles: MessageToggles::new(&conf, logger),
             send_period: conf.get_or_default("send_every_nth", 2),
             send_period_counter: 0,
+            last_beat_master: 0.0,
+            last_beats: vec![0.0; 4],
         }))
     }
 }
@@ -179,7 +195,29 @@ impl OutputModule for Osc {
         if self.message_toggles.beat_master_div_4{
             self.send_float("/beat/master/div4", (beat % 4.) / 4.);
         }
+        if self.message_toggles.beat_master_trigger_div_1 {
+            let div1 = beat % 1.0;
+            if div1 < (self.last_beat_master % 1.0) {
+                self.send_float("/beat/master/trigger/div1", 1.);
+            }
+        }
+
+        if self.message_toggles.beat_master_trigger_div_2 {
+            let div2 = beat % 2.0;
+            if div2 < (self.last_beat_master % 2.0) {
+                self.send_float("/beat/master/trigger/div2", 1.);
+            }
+        }
+
+        if self.message_toggles.beat_master_trigger_div_4 {
+            let div4 = beat % 4.0;
+            if div4 < (self.last_beat_master % 4.0) {
+                self.send_float("/beat/master/trigger/div4", 1.);
+            }
+        }
+        self.last_beat_master = beat;
     }
+
 
     fn time_update_master(&mut self, time: f32) {
         if self.send_period_counter != 0 {
@@ -206,6 +244,25 @@ impl OutputModule for Osc {
         if self.message_toggles.beat_div_4{
             self.send_float(&format!("/beat/{deck}/div4"), beat % 4.);
         }
+        if self.message_toggles.beat_trigger_div_1 {
+            let div1 = beat % 1.0;
+            if div1 < (self.last_beats[deck] % 1.0){
+                self.send_float(&format!("/beat/{deck}/trigger/div1"), 1.);
+            }
+        }
+        if self.message_toggles.beat_trigger_div_2 {
+            let div2 = beat % 2.0;
+            if div2 < (self.last_beats[deck] % 2.0) {
+                self.send_float(&format!("/beat/{deck}/trigger/div2"), 1.);
+            }
+        }
+        if self.message_toggles.beat_trigger_div_4 {
+            let div4 = beat % 4.0;
+            if div4 < (self.last_beats[deck] % 4.0) {
+                self.send_float(&format!("/beat/{deck}/trigger/div4"), 1.);
+            }
+        }
+        self.last_beats[deck] = beat;
     }
 
     fn time_update(&mut self, time: f32, deck: usize) {
